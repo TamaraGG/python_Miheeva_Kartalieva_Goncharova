@@ -5,4 +5,4 @@
 2. Карталиева Ф.И.
 3. Гончарова Т.Г.
 
-Итоговая задача: https://github.com/TamaraGG/face_recognition_telegram_bot/tree/release
+### Итоговая задача: https://github.com/TamaraGG/face_recognition_telegram_bot/tree/release
