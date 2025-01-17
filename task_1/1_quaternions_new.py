@@ -145,35 +145,64 @@ class Quaternion:
 
 
 # Unit-тесты для проверки функциональности
-class TestQuaternion(unittest.TestCase):
-    def test_addition(self):
-        q1 = Quaternion(1, 2, 3, 4)
-        q2 = Quaternion(0.5, 1.5, -1, 2)
-        self.assertEqual(q1 + q2, Quaternion(1.5, 3.5, 2, 6))
+class TestQuaternionWithExampleData(unittest.TestCase):
+    def test_scalar_operations(self):
+        q1 = Quaternion(3, -2, 5, 8)
+        self.assertEqual(q1 * 2, Quaternion(6, -4, 10, 16))
+        self.assertEqual(q1 / 2, Quaternion(1.5, -1, 2.5, 4))
 
-    def test_multiplication(self):
-        q1 = Quaternion(1, 2, 3, 4)
-        q2 = Quaternion(0.5, 1.5, -1, 2)
-        result = q1 * q2
-        expected = Quaternion(-7.5, 12.5, 2.5, -2.5)
-        self.assertEqual(result, expected)
+    def test_scalar_addition_and_subtraction(self):
+        q2 = Quaternion(0, 4, -1, 1)
+        self.assertEqual(q2 - 4.6, Quaternion(-4.6, 4, -1, 1))
+        self.assertEqual(q2 + 0.1, Quaternion(0.1, 4, -1, 1))
+
+    def test_quaternion_addition_and_subtraction(self):
+        q1 = Quaternion(3, -2, 5, 8)
+        q2 = Quaternion(0, 4, -1, 1)
+        self.assertEqual(q1 + q2, Quaternion(3, 2, 4, 9))
+        self.assertEqual(q1 - q2, Quaternion(3, -6, 6, 7))
+
+    def test_quaternion_multiplication(self):
+        q1 = Quaternion(3, -2, 5, 8)
+        q2 = Quaternion(0, 4, -1, 1)
+        expected_mul = Quaternion(5, 25, 31, -15)
+        self.assertEqual(q1 * q2, expected_mul)
+
+    def test_unary_negation(self):
+        q1 = Quaternion(3, -2, 5, 8)
+        self.assertEqual(-q1, Quaternion(-3, 2, -5, -8))
+
+    def test_conjugate_and_norm(self):
+        q2 = Quaternion(0, 4, -1, 1)
+        self.assertEqual(q2.conjugate, Quaternion(0, -4, 1, -1))
+        self.assertAlmostEqual(q2.norm, math.sqrt(0**2 + 4**2 + (-1)**2 + 1**2))
+
+    def test_inverse_property(self):
+        q2 = Quaternion(0, 4, -1, 1)
+        self.assertTrue(q2 * q2.inverse == Quaternion(1, 0, 0, 0))
+
+    def test_pure_imaginary_and_complex_checks(self):
+        q2 = Quaternion(0, 4, -1, 1)
+        self.assertTrue(q2.is_pure_imaginary())
+
+        q_complex = Quaternion(1, 1, 0, 0)
+        self.assertTrue(q_complex.is_complex())
 
     def test_normalization(self):
-        q = Quaternion(1, 2, 3, 4)
+        q = Quaternion(3, -2, 5, 8)
+        norm = math.sqrt(3**2 + (-2)**2 + 5**2 + 8**2)  # sqrt(9 + 4 + 25 + 64) = sqrt(102)
+        
         q.normalize()
-        norm = math.sqrt(1 + 4 + 9 + 16)
-        self.assertAlmostEqual(q.w, 1 / norm)
-        self.assertAlmostEqual(q.x, 2 / norm)
-        self.assertAlmostEqual(q.y, 3 / norm)
-        self.assertAlmostEqual(q.z, 4 / norm)
 
-    def test_inverse(self):
-        q = Quaternion(1, 2, 3, 4)
-        inv_q = q.inverse
-        self.assertAlmostEqual((q * inv_q).w, 1)
-        self.assertAlmostEqual((q * inv_q).x, 0)
-        self.assertAlmostEqual((q * inv_q).y, 0)
-        self.assertAlmostEqual((q * inv_q).z, 0)
+        self.assertAlmostEqual(q.w, 3 / norm)
+        self.assertAlmostEqual(q.x, -2 / norm)
+        self.assertAlmostEqual(q.y, 5 / norm)
+        self.assertAlmostEqual(q.z, 8 / norm)
+
+    def test_zero_norm(self):
+        q = Quaternion(0, 0, 0, 0)
+        with self.assertRaises(ZeroDivisionError):
+            q.normalize()
 
 
 if __name__ == "__main__":
